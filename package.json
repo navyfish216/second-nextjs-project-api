@@ -10,11 +10,7 @@
     "clean-dev": "run-s clean dev",
     "clean-build": "run-s clean build",
     "clean-start": "run-s clean build start",
-    "lint": "eslint",
-    "typecheck": "tsc --noEmit",
-    "format": "run-s format:*",
-    "format:elint": "eslint --fix './src/**/*.{js,ts,tsx}'",
-    "format:prettier": "prettier --write './src/**/*.{js,ts,tsx}'"
+    "lint": "eslint"
   },
   "dependencies": {
     "next": "16.2.9",
