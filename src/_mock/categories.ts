@@ -22,4 +22,11 @@ export const categories: Category[] = [
     description: "description",
     imageUrl: "/images/no-image.jpg",
   },
+  {
+    id: "9",
+    name: "other",
+    label: "その他",
+    description: "description",
+    imageUrl: "/images/no-image.jpg",
+  },
 ];
