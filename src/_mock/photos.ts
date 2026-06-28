@@ -1,6 +1,6 @@
 import type { Photo } from ".";
 
-export const photos: Photo[] = [...new Array(10)].map((_, i) => {
+export const photos: Photo[] = [...new Array(62)].map((_, i) => {
   const id = `00${i + 1}`.slice(-3);
   const authorId = `${(i % 3) + 1}`;
   return {
