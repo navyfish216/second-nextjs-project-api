@@ -13,8 +13,16 @@ export async function GET(
   const photo: Photo | null = await prisma.photo.findUnique({
     where: {
       id: photoId
+    },
+    include: {
+      category: true
     }
   });
+
+  // console.log(photo?.title);
+  // console.log(photo?.imageUrl);
+  // console.log(photo?.category.name);
+  // console.log(photo?.category.label);
 
   if (!photo) {
     return Response.json({ message: "Not Found" }, { status: 404 });

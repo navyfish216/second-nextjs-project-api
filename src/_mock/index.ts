@@ -5,6 +5,7 @@ export type Photo = {
   imageUrl: string;
   authorId: string;
   categoryId: string;
+  category: Category;
 };
 
 export type Category = {
