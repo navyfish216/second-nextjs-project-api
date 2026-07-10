@@ -18,3 +18,7 @@ export type Category = {
   description: string;
   imageUrl: string;
 };
+
+export type CategoryWithPhotos = Category & {
+  photos: Photo[];
+}

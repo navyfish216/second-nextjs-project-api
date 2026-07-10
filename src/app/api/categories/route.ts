@@ -1,5 +1,5 @@
 //import { categories } from "@/_mock/categories";
-import { Category } from "@/_mock";
+import { CategoryWithPhotos } from "@/_mock";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -13,12 +13,18 @@ export async function GET() {
   //     imageUrl: true,
   //   }
   // });
-  const categories: Category[] = await prisma.category.findMany();
-  categories.map(c => {
-    console.log(c.id + "," + c.name + "," + c.label + "," + c.description + "," + c.imageUrl);
+  const categories: CategoryWithPhotos[] = await prisma.category.findMany({
+    include: {
+      photos: true
+    }
   });
-
-  console.log(Response.json({ categories }));
+  // categories.map(c => {
+  //   console.log(c.id + "," + c.name + "," + c.label + "," + c.description + "," + c.imageUrl);
+  //   c.photos.map(p => {
+  //     console.log(p.imageUrl);
+  //   })
+  // });
+  // console.log(Response.json({ categories }));
 
   // 🚧: DBに接続しレコードを取得する
   //return Response.json({ categories });
