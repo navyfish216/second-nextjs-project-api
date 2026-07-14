@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { Like } from "@/_mock";
+import { type Like } from "@/_mock";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(

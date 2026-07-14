@@ -1,6 +1,5 @@
 import { type NextRequest } from "next/server";
-// import { categories } from "@/_mock/categories";
-import { CategoryWithPhotos } from "@/_mock";
+import { type CategoryWithPhotos } from "@/_mock";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -10,9 +9,6 @@ export async function GET(
   console.log("get category by categoryName");
   const categoryName = (await params).categoryName
   // 🚧: DBに接続しレコードを取得する
-  // const category = categories.find(
-  //   (category) => category.name === categoryName,
-  // );
   const category: CategoryWithPhotos | null = await prisma.category.findUnique({
     where: {
       name: categoryName
