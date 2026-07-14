@@ -6,23 +6,25 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ photoId: string }> },
 ) {
-  const { searchParams } = new URL(request.url);
   const photoId = (await params).photoId;
+  const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
   if (!userId) {
     return Response.json({ message: "Invalid Params" }, { status: 400 });
   }
 
+  // 対象の写真に対するいいね数を取得
   const likes: number = await prisma.like.count({
     where: { 
       photoId: photoId
     },
   });
 
+  // 対象の写真に対してユーザーがいいねしているかを取得
   const like: Like | null = await prisma.like.findFirst({
     where: { 
       photoId: photoId,
-      userId 
+      userId: userId
     },
   });
 
@@ -33,9 +35,54 @@ export async function GET(
 }
 
 export async function POST(
-  _: NextRequest,
+  request: NextRequest,
   {params}: {params: Promise<{photoId: string}>}
 ) {
-  console.log(`photoId ${(await params).photoId} が「いいね」されました`);
-  return Response.json({liked: true});
+  const body = await request.json();
+  const userId = body.userId;
+  const photoId = (await params).photoId;
+
+  // 対象の写真に対してユーザーがいいねしているかを取得
+  let like: Like | null = await prisma.like.findFirst({
+    where: { 
+      photoId: photoId,
+      userId: userId
+    },
+  });
+
+  // いいね済かどうかによって処理分岐
+  if (like === null) {
+    // いいねしていない場合は登録
+    console.log("いいねします");
+    await prisma.like.create({
+      data: { photoId: photoId, userId: userId },
+    });
+  } else {
+    // いいね済の場合は削除
+    console.log("いいねを取り消します");
+    await prisma.like.deleteMany({
+      where: { photoId: photoId, userId: userId },
+    });
+  }
+
+  // DB登録後のいいね数を取得
+  const likes: number = await prisma.like.count({
+    where: { 
+      photoId: photoId
+    },
+  });
+
+  // 対象の写真に対してユーザーがいいねしているかを再取得
+  like = await prisma.like.findFirst({
+    where: { 
+      photoId: photoId,
+      userId: userId
+    },
+  });
+
+  // 登録後のいいね状態を返却
+  return Response.json({ 
+    liked: !!like, 
+    likes: likes 
+  });
 }
