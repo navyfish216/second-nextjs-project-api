@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { type PhotoWithCategory } from "@/_mock";
+import { type PhotoWithCategory } from "@/type";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(

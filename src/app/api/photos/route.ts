@@ -1,4 +1,4 @@
-import { type Photo } from "@/_mock";
+import { type Photo } from "@/type";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
