@@ -1,4 +1,4 @@
-import type { Photo } from ".";
+import type { Photo } from "@/type";
 
 export const photos: Photo[] = [...new Array(62)].map((_, i) => {
   const id = `00${i + 1}`.slice(-3);
