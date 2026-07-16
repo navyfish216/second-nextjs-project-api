@@ -2,6 +2,42 @@ import { type NextRequest } from "next/server";
 import { type Like } from "@/type";
 import { prisma } from "@/lib/prisma";
 
+type LikedAndLikes = {
+  liked: boolean;
+  likes: number;
+};
+
+async function getUserLike(photoId: string, userId: string): Promise<Like | null> {
+
+  // 対象の写真に対してユーザーがいいねしているかを取得
+  const like: Like | null = await prisma.like.findFirst({
+    where: { 
+      photoId: photoId,
+      userId: userId
+    },
+  });
+
+  return like;
+}
+
+async function getLike(photoId: string, userId: string): Promise<LikedAndLikes> {
+
+  // 対象の写真に対するいいね数を取得
+  const likes: number = await prisma.like.count({
+    where: { 
+      photoId: photoId
+    },
+  });
+
+  // 対象の写真に対してユーザーがいいねしているかを取得
+  const like: Like | null = await getUserLike(photoId, userId);
+
+  return ({
+    liked: !!like,
+    likes: likes
+  });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ photoId: string }> },
@@ -13,25 +49,9 @@ export async function GET(
     return Response.json({ message: "Invalid Params" }, { status: 400 });
   }
 
-  // 対象の写真に対するいいね数を取得
-  const likes: number = await prisma.like.count({
-    where: { 
-      photoId: photoId
-    },
-  });
+  const likedAndLikes: LikedAndLikes = await getLike(photoId, userId);
 
-  // 対象の写真に対してユーザーがいいねしているかを取得
-  const like: Like | null = await prisma.like.findFirst({
-    where: { 
-      photoId: photoId,
-      userId: userId
-    },
-  });
-
-  return Response.json({ 
-    liked: !!like, 
-    likes: likes 
-  });
+  return Response.json(likedAndLikes);
 }
 
 export async function POST(
@@ -43,12 +63,7 @@ export async function POST(
   const photoId = (await params).photoId;
 
   // 対象の写真に対してユーザーがいいねしているかを取得
-  let like: Like | null = await prisma.like.findFirst({
-    where: { 
-      photoId: photoId,
-      userId: userId
-    },
-  });
+  let like: Like | null = await getUserLike(photoId, userId);
 
   // いいね済かどうかによって処理分岐
   if (like === null) {
@@ -65,24 +80,8 @@ export async function POST(
     });
   }
 
-  // DB登録後のいいね数を取得
-  const likes: number = await prisma.like.count({
-    where: { 
-      photoId: photoId
-    },
-  });
+  // DB登録後のいいねを取得
+  const likedAndLikes: LikedAndLikes = await getLike(photoId, userId);
 
-  // 対象の写真に対してユーザーがいいねしているかを再取得
-  like = await prisma.like.findFirst({
-    where: { 
-      photoId: photoId,
-      userId: userId
-    },
-  });
-
-  // 登録後のいいね状態を返却
-  return Response.json({ 
-    liked: !!like, 
-    likes: likes 
-  });
+  return Response.json(likedAndLikes);
 }
