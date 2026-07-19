@@ -65,20 +65,21 @@ export async function POST(
   // 対象の写真に対してユーザーがいいねしているかを取得
   let like: Like | null = await getUserLike(photoId, userId);
 
-  // いいね済かどうかによって処理分岐
-  if (like === null) {
-    // いいねしていない場合は登録
-    console.log("いいねします");
-    await prisma.like.create({
-      data: { photoId: photoId, userId: userId },
-    });
-  } else {
-    // いいね済の場合は削除
-    console.log("いいねを取り消します");
-    await prisma.like.deleteMany({
-      where: { photoId: photoId, userId: userId },
-    });
-  }
+  // トランザクション内でDB書き込み
+  await prisma.$transaction(async (tx) => {
+    // いいね済かどうかによって処理分岐
+    if (like === null) {
+      // いいねしていない場合は登録
+      await tx.like.create({
+        data: { photoId: photoId, userId: userId },
+      });
+    } else {
+      // いいね済の場合は削除
+      await tx.like.deleteMany({
+        where: { photoId: photoId, userId: userId },
+      });
+    }
+  });
 
   // DB登録後のいいねを取得
   const likedAndLikes: LikedAndLikes = await getLike(photoId, userId);
