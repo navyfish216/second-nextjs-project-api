@@ -13,7 +13,13 @@ const pool = new Pool({
 
 const adapter = new PrismaPg(pool);
 
-export const prisma = global.prisma || new PrismaClient({ adapter });
+const isPrismaDebug: boolean = process.env.PRISMA_DEBUG === 'true';
+
+export const prisma = global.prisma || 
+(
+  isPrismaDebug ? 
+  new PrismaClient({ adapter, log: ['query', 'info', 'warn', 'error'] }) : new PrismaClient({ adapter })
+);
 
 if (process.env.NODE_ENV !== "production") global.prisma = prisma;
 
