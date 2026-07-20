@@ -81,8 +81,5 @@ export async function POST(
     }
   });
 
-  // DB登録後のいいねを取得
-  const likedAndLikes: LikedAndLikes = await getLike(photoId, userId);
-
-  return Response.json(likedAndLikes);
+  return Response.json("");
 }
