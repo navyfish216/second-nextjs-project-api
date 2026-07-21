@@ -1,6 +1,7 @@
 import { type NextRequest } from "next/server";
 import { type Like } from "@/type";
 import { prisma } from "@/lib/prisma";
+import sleep from "@/lib/sleep";
 
 type LikedAndLikes = {
   liked: boolean;
@@ -80,6 +81,9 @@ export async function POST(
       });
     }
   });
+
+  // 画面の非活性確認用にスリープする
+  await sleep(3000);
 
   return Response.json("");
 }
