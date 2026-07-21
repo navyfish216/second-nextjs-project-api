@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { type Like } from "@/type";
 import { prisma } from "@/lib/prisma";
-import sleep from "@/lib/sleep";
+import { sleepIfFlagTrue } from "@/lib/sleep";
 
 type LikedAndLikes = {
   liked: boolean;
@@ -52,6 +52,9 @@ export async function GET(
 
   const likedAndLikes: LikedAndLikes = await getLike(photoId, userId);
 
+  // 画面のローディング確認用にスリープする
+  await sleepIfFlagTrue(500);
+
   return Response.json(likedAndLikes);
 }
 
@@ -83,7 +86,7 @@ export async function POST(
   });
 
   // 画面の非活性確認用にスリープする
-  await sleep(3000);
+  await sleepIfFlagTrue(3000);
 
   return Response.json("");
 }
