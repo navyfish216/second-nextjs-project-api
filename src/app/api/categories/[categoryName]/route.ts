@@ -6,7 +6,7 @@ export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ categoryName: string }> },
 ) {
-  console.log("get category by categoryName");
+  // console.log("get category by categoryName");
   const categoryName = (await params).categoryName
   // 🚧: DBに接続しレコードを取得する
   const category: CategoryWithPhotos | null = await prisma.category.findUnique({
