@@ -18,13 +18,6 @@ export async function GET() {
       photos: true
     }
   });
-  // categories.map(c => {
-  //   console.log(c.id + "," + c.name + "," + c.label + "," + c.description + "," + c.imageUrl);
-  //   c.photos.map(p => {
-  //     console.log(p.imageUrl);
-  //   })
-  // });
-  // console.log(Response.json({ categories }));
 
   return Response.json({ categories });
 }
