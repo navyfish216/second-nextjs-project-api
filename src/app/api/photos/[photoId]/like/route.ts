@@ -1,7 +1,9 @@
+import { headers } from 'next/headers';
 import { type NextRequest } from "next/server";
 import { type Like } from "@/type";
 import { prisma } from "@/lib/prisma";
 import { sleepIfFlagTrue } from "@/lib/sleep";
+import { getUserMap } from '@/util/auth';
 
 type LikedAndLikes = {
   liked: boolean;
@@ -43,9 +45,16 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ photoId: string }> },
 ) {
+  // リクエストヘッダーからトークンを取得
+  const headersList = await headers();
+  let token = headersList.get('X-Auth-Token');
+  token = !!token ? token : "";
+  console.log(`GET X-Auth-Token: ${token}`);
+  const user = getUserMap(token);
+  console.log(`GET userId: ${user?.userId}`);
+  const userId = user?.userId;
+
   const photoId = (await params).photoId;
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
   if (!userId) {
     return Response.json({ message: "Invalid Params" }, { status: 400 });
   }
@@ -62,9 +71,20 @@ export async function POST(
   request: NextRequest,
   {params}: {params: Promise<{photoId: string}>}
 ) {
-  const body = await request.json();
-  const userId = body.userId;
   const photoId = (await params).photoId;
+
+  // リクエストヘッダーからトークンを取得
+  const headersList = await headers();
+  let token = headersList.get('X-Auth-Token');
+  token = !!token ? token : "";
+  console.log(`POST X-Auth-Token: ${token}`);
+  const user = getUserMap(token);
+  console.log(`POST userId: ${user?.userId}`);
+  const userId = user?.userId;
+
+  if (!userId) {
+    return Response.json({ message: "Invalid Params" }, { status: 400 });
+  }
 
   // 対象の写真に対してユーザーがいいねしているかを取得
   let like: Like | null = await getUserLike(photoId, userId);
