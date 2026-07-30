@@ -18,6 +18,8 @@ export function getUserMap(token: string): User | undefined {
   userMap.forEach((value, key) => {
     console.log(key, value.userId);
   });
+  const user = userMap.get(token);
+  console.log(`getUserMap user ${user?.userId}`);
 
-  return {userId: "dummy"};
+  return user;
 }

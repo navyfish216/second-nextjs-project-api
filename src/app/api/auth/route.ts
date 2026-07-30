@@ -44,8 +44,8 @@ export async function POST(
 
   const timestamp = formatDateToTimestamp(date);
   const authToken = `dummy-token-${timestamp}`;
-  console.log(`${formatDate(date)} auth POST auth-tokenを設定 : ${authToken}`);
   setUserMap(authToken, userId);
+  console.log(`${formatDate(new Date())} auth POST auth-tokenを設定 : ${authToken}`);
 
   return Response.json(JSON.stringify({"authToken": `${authToken}`}));
 }
