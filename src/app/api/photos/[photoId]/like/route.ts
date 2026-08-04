@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { type Like } from "@/type";
 import { prisma } from "@/lib/prisma";
 import { sleepIfFlagTrue } from "@/lib/sleep";
-import { getUserMap } from '@/util/auth';
+import { getAccessTokenMap } from '@/util/auth';
 
 type LikedAndLikes = {
   liked: boolean;
@@ -47,10 +47,10 @@ export async function GET(
 ) {
   // リクエストヘッダーからトークンを取得
   const headersList = await headers();
-  let token = headersList.get('X-Auth-Token');
+  let token = headersList.get('X-Access-Token');
   token = !!token ? token : "";
-  console.log(`GET X-Auth-Token: ${token}`);
-  const user = getUserMap(token);
+  console.log(`GET X-Access-Token: ${token}`);
+  const user = getAccessTokenMap(token);
   console.log(`GET userId: ${user?.userId}`);
   const userId = user?.userId;
 
@@ -75,10 +75,10 @@ export async function POST(
 
   // リクエストヘッダーからトークンを取得
   const headersList = await headers();
-  let token = headersList.get('X-Auth-Token');
+  let token = headersList.get('X-Access-Token');
   token = !!token ? token : "";
-  console.log(`POST X-Auth-Token: ${token}`);
-  const user = getUserMap(token);
+  console.log(`POST X-Access-Token: ${token}`);
+  const user = getAccessTokenMap(token);
   console.log(`POST userId: ${user?.userId}`);
   const userId = user?.userId;
 

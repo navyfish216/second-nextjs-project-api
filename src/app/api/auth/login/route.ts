@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { setUserMap } from "@/util/auth";
+import { setRefreshTokenMap } from "@/util/auth";
 
 function formatDate(date: Date): string {
   
@@ -40,12 +40,12 @@ export async function POST(
   const body = await request.json();
   const userId = body.userId;
   const password = body.password;
-  console.log(`${formatDate(date)} auth POST userId: ${userId} password: ${password}`);
+  console.log(`${formatDate(date)} login POST userId: ${userId} password: ${password}`);
 
   const timestamp = formatDateToTimestamp(date);
-  const authToken = `dummy-token-${timestamp}`;
-  setUserMap(authToken, userId);
-  console.log(`${formatDate(new Date())} auth POST auth-tokenを設定 : ${authToken}`);
+  const refreshToken = `dummy-refresh-token-${timestamp}`;
+  setRefreshTokenMap(refreshToken, userId);
+  console.log(`${formatDate(new Date())} login POST refresh-tokenを設定 : ${refreshToken}`);
 
-  return Response.json(JSON.stringify({"authToken": `${authToken}`}));
+  return Response.json(JSON.stringify({"refreshToken": `${refreshToken}`}));
 }
