@@ -1,14 +1,14 @@
 import { headers } from 'next/headers';
 import { type NextRequest } from "next/server";
-import { type Like } from "@/type";
+import { type Like, LikedAndLikes } from "@/type";
 import { prisma } from "@/lib/prisma";
 import { sleepIfFlagTrue } from "@/lib/sleep";
 import { getAccessTokenMap } from '@/util/auth';
 
-type LikedAndLikes = {
-  liked: boolean;
-  likes: number;
-};
+// type LikedAndLikes = {
+//   liked: boolean;
+//   likes: number;
+// };
 
 async function getUserLike(photoId: string, userId: string): Promise<Like | null> {
 

@@ -28,3 +28,13 @@ export type Like = {
   userId: string;
   photoId: string;
 }
+
+export type User = {
+    userId: string;
+    addDate: Date;
+}
+
+export type LikedAndLikes = {
+  liked: boolean;
+  likes: number;
+};
