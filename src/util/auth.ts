@@ -1,11 +1,6 @@
 import { isBefore, add } from "date-fns";
 import { type User } from "@/type";
 
-// type User = {
-//     userId: string;
-//     addDate: Date;
-// }
-
 const refreshTokenMap = new Map<string, User>();
 const accessTokenMap = new Map<string, User>();
 

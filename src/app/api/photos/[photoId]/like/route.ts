@@ -5,11 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { sleepIfFlagTrue } from "@/lib/sleep";
 import { getAccessTokenMap } from '@/util/auth';
 
-// type LikedAndLikes = {
-//   liked: boolean;
-//   likes: number;
-// };
-
 async function getUserLike(photoId: string, userId: string): Promise<Like | null> {
 
   // 対象の写真に対してユーザーがいいねしているかを取得
