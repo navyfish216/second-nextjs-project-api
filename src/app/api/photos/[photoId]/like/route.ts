@@ -46,6 +46,12 @@ export async function GET(
   token = !!token ? token : "";
   console.log(`GET X-Access-Token: ${token}`);
   const user = getAccessTokenMap(token);
+
+  if (user === undefined) {
+    console.log("GET error: 'Unauthorized'");
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   console.log(`GET userId: ${user?.userId}`);
   const userId = user?.userId;
 
@@ -74,6 +80,12 @@ export async function POST(
   token = !!token ? token : "";
   console.log(`POST X-Access-Token: ${token}`);
   const user = getAccessTokenMap(token);
+
+  if (user === undefined) {
+    console.log("POST error: 'Unauthorized'");
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   console.log(`POST userId: ${user?.userId}`);
   const userId = user?.userId;
 

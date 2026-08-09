@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { getRefreshTokenMap, setAccessTokenMap } from "@/util/auth";
 
 function formatDate(date: Date): string {
@@ -46,7 +46,8 @@ export async function GET(
   const user = getRefreshTokenMap(token);
 
   if (user === undefined) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    console.log("error: 'Unauthorized'");
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const userId = user.userId;
@@ -58,5 +59,5 @@ export async function GET(
   setAccessTokenMap(accessToken, userId);
   console.log(`${formatDate(new Date())} auth POST access-tokenを設定 : ${accessToken}`);
 
-  return NextResponse.json(JSON.stringify({"accessToken": `${accessToken}`}));
+  return Response.json(JSON.stringify({"accessToken": `${accessToken}`}));
 }
