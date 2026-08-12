@@ -1,9 +1,20 @@
 import { headers } from 'next/headers';
 import { type NextRequest } from "next/server";
-import { type Like, LikedAndLikes } from "@/type";
+import { type Like, LikedAndLikes, User } from "@/type";
 import { prisma } from "@/lib/prisma";
 import { sleepIfFlagTrue } from "@/lib/sleep";
 import { getAccessTokenMap } from '@/util/auth';
+
+async function getUser(): Promise<User | undefined> {
+
+  // リクエストヘッダーからトークンを取得
+  const headersList = await headers();
+  let token = headersList.get('X-Access-Token');
+  token = !!token ? token : "";
+  console.log(`X-Access-Token: ${token}`);
+
+  return getAccessTokenMap(token);
+}
 
 async function getUserLike(photoId: string, userId: string): Promise<Like | null> {
 
@@ -40,12 +51,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ photoId: string }> },
 ) {
-  // リクエストヘッダーからトークンを取得
-  const headersList = await headers();
-  let token = headersList.get('X-Access-Token');
-  token = !!token ? token : "";
-  console.log(`GET X-Access-Token: ${token}`);
-  const user = getAccessTokenMap(token);
+  const user = await getUser();
 
   if (user === undefined) {
     console.log("GET error: 'Unauthorized'");
@@ -73,13 +79,7 @@ export async function POST(
   {params}: {params: Promise<{photoId: string}>}
 ) {
   const photoId = (await params).photoId;
-
-  // リクエストヘッダーからトークンを取得
-  const headersList = await headers();
-  let token = headersList.get('X-Access-Token');
-  token = !!token ? token : "";
-  console.log(`POST X-Access-Token: ${token}`);
-  const user = getAccessTokenMap(token);
+  const user = await getUser();
 
   if (user === undefined) {
     console.log("POST error: 'Unauthorized'");
@@ -94,7 +94,7 @@ export async function POST(
   }
 
   // 対象の写真に対してユーザーがいいねしているかを取得
-  let like: Like | null = await getUserLike(photoId, userId);
+  const like: Like | null = await getUserLike(photoId, userId);
 
   // トランザクション内でDB書き込み
   await prisma.$transaction(async (tx) => {
